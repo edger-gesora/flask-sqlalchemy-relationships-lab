@@ -1,15 +1,34 @@
-# Lab: Modeling Relationships in Flask-SQLAlchemy
+# Flask-SQLAlchemy Relationships Lab
 
-A Flask backend application demonstrating one-to-one, one-to-many, and many-to-many relationships using SQLAlchemy, complete with database migrations and RESTful API endpoints.
+An event management API for EventWise, built with Flask and SQLAlchemy.
 
-## Features
-- **Models & Relationships**: Event, Session, Speaker, and Bio with proper foreign keys, association tables, backrefs, and cascade deletions.
-- **API Endpoints**: Full GET routes returning JSON data and error handling with appropriate HTTP status codes.
-- **Testing**: Automated test suite using `pytest`.
+## Models and relationships
+- **Event** has many **Sessions** (one-to-many)
+- **Speaker** has one **Bio** (one-to-one)
+- **Session** and **Speaker** are many-to-many through the `session_speakers` table
+- Deleting an Event deletes its Sessions
+- Deleting a Speaker deletes their Bio
 
 ## Setup
-1. Clone the repository and navigate into the `server/` directory.
-2. Create and activate a virtual environment:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install flask flask-sqlalchemy flask-migrate faker pytest
+cd server
+export FLASK_APP=app.py
+flask db upgrade head
+python seed.py
+flask run --port 5555
+```
+
+## Endpoints
+- GET `/events`: list all events
+- GET `/events/<id>/sessions`: sessions for an event
+- GET `/speakers`: list all speakers
+- GET `/speakers/<id>`: a speaker with their bio
+- GET `/sessions/<id>/speakers`: speakers for a session
+
+## Tests
+Run `pytest` from the `server/` folder. All 13 tests pass.
+
+![Tests passing](assets/tests-passing.png)~
